@@ -4,15 +4,13 @@ import useToggle from "../../hooks/useToggler";
 const TodoItem = React.memo(({todo:
   { name, completed}, onToggle, onEdit, onDelete
 }) => {
-  const { editTodoNameText, setEditTodoNameText } = useState("");
-  const { editTodoNameErr, setEditTodoErr } = useState("") 
+  const [ editTodoNameText, setEditTodoNameText ] = useState("");
+  const [ editTodoNameErr, setEditTodoErr ] = useState("") 
 
-  const onOpen = (() => {
-    setEditTodoNameText(name);
-  }).bind(this)
-  
 
-  const { isToggle, toggle } = useToggle(onOpen);
+  const { isToggle, toggle } = useToggle(()=>{
+    setEditTodoNameText(name)
+  });
 
 
   const editTodoNameFunc = () => {
@@ -23,11 +21,14 @@ const TodoItem = React.memo(({todo:
         name: editTodoNameText,
         completed
       })
+      toggle()
+      setEditTodoErr('')
     }
   }
 
   const deleteTodoFunc = () => {
-    if (console.confirm('Do you want to delete this todo ?') === true) {
+    if (window.confirm('Do you want to delete this todo ?') === true) {
+      debugger
       onDelete()
     }
   }
@@ -39,7 +40,6 @@ const TodoItem = React.memo(({todo:
         <div>
             <input type="checkbox" value={completed} onClick={()=>{
               onToggle()
-              onOpen()
             }} />
             {`name: ${name} / completed: ${completed}`}
             <button onClick={toggle}>edit</button>
@@ -48,7 +48,7 @@ const TodoItem = React.memo(({todo:
         ): (
             <div>
               {editTodoNameErr}
-              name: <input type="text" value={editTodoNameText} />
+              name: <input type="text" value={editTodoNameText} onInput={(e)=>setEditTodoNameText(e.target.value)} />
               <button onClick={editTodoNameFunc}>save edit</button>
             </div>
         )}

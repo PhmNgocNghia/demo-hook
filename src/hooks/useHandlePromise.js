@@ -13,8 +13,7 @@ import {
 
 
 
-function reducer(state, action) {
-    console.log(state)
+function reducer(state, action) {   
     switch (action.type) {
         
         case 'REQUEST_PENDING':

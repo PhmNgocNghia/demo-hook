@@ -5,17 +5,20 @@ import useInputValue from "../../hooks/useInputValue";
 const reducer = (state, action) => {
   switch (action.type) {
     case "ADD_TODO":
+    const clonedState = [...state]
       return [...state, action.payload];
     case "DELETE_TODO":
-      return [...state.splice(action.index)];
+      var clonedState = [...state]
+      clonedState.splice(action.index,1)
+      return clonedState
     case "EDIT_TODO":
-      var clonedState = [ ...state ];
-      clonedState[action.index] = action.payload;
-      return clonedState
+      var clonedState1 = [ ...state ];
+      clonedState1[action.index] = action.payload;
+      return clonedState1
     case "TOGGLE_TODO":
-      var clonedState = [ ...state ];
-      clonedState[action.index].completed = !clonedState[action.index].completed;
-      return clonedState
+      var clonedState2 = [ ...state ];
+      clonedState2[action.index].completed = !clonedState2[action.index].completed;
+      return clonedState2
     default:
       return state;
   }
@@ -35,7 +38,7 @@ const TodoContainer = React.memo(() => {
   );
 
   const addTodo = () => {
-    if (addTodoText.value != "") {
+    if (addTodoText.value !== "") {
       dispatchTodo({
         type: "ADD_TODO",
         payload: {
@@ -43,16 +46,15 @@ const TodoContainer = React.memo(() => {
           completed: false
         }
       });
+      addTodoText.SetValue("")
     }
   };
 
-  const editTodo = (index, newValue) => {
+  const editTodo = (newValue, index) => {
     dispatchTodo({
       type: "EDIT_TODO",
-      payload: {
-        index,
-        name: newValue
-      }
+      index,
+      payload: newValue
     });
   };
 
@@ -64,6 +66,7 @@ const TodoContainer = React.memo(() => {
   };
 
   const deleteTodo = index => {
+    debugger
     dispatchTodo({
       type: "DELETE_TODO",
       index
@@ -82,7 +85,7 @@ const TodoContainer = React.memo(() => {
           todo={todo}
           key={index}
           onEdit={newTodo => editTodo(newTodo, index)}
-          onDelete={()=>deleteTodo}
+          onDelete={()=>deleteTodo(index)}
           onToggle={()=>toggleTodo(index)}
         />
       ))}
